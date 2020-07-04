@@ -1,0 +1,1 @@
+{"version":3,"sources":["History.css"],"names":[],"mappings":"AAAA,gBACE,YAAa,CACb,qBAAsB,CACtB,QACF","file":"7.02fdabe7.chunk.css","sourcesContent":[".ant-list-items {\r\n  display: flex;\r\n  flex-direction: column;\r\n  flex: 1;\r\n}"]}
