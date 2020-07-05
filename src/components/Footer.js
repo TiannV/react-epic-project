@@ -8,13 +8,13 @@ const Footer = styled.footer`
 `
 const Title = styled.div`
   font-size: 15px;
-  color: #e8eaed;
+  color: #e8eaed8c;
 `
 
 function Component() {
   return (
     <Footer>
-      <Title>Copyright © 2020 Paula Hu</Title>
+      <Title>MIT Licensed | Copyright © 2020 Paula Hu</Title>
     </Footer>
   )
 }
