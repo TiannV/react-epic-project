@@ -2,7 +2,7 @@ import React, {useState,  useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useStores } from '../stores';
 import InfiniteScroll from 'react-infinite-scroller';
-import { List, Spin, Button, message } from 'antd';
+import { List, Spin, Button, message, Modal } from 'antd';
 import styled from 'styled-components';
 import {supabase} from '../models'
 
@@ -15,7 +15,8 @@ const Img = styled.img`
 
 const Component = observer((attr, item) => {
     const [session, setSession] = useState(null)
-
+  const [visible, setVisible] = useState(false); // 控制模态框显示状态
+  const [currentImage, setCurrentImage] = useState(null); 
     useEffect(() => {
       supabase.auth.getSession().then(({ data: { session } }) => {
         console.log(session)
@@ -85,6 +86,15 @@ const Component = observer((attr, item) => {
     }
   }, []);
 
+  const handleImageClick = (url) => {
+    setCurrentImage(url); // 设置当前选中的图片
+    setVisible(true); // 显示模态框
+  };
+
+  const handleCancel = () => {
+    setVisible(false); // 隐藏模态框
+  };
+
   return (
 <div style={{ margin: '20px' }}>
       <InfiniteScroll
@@ -100,7 +110,9 @@ const Component = observer((attr, item) => {
           renderItem={item => (
             <List.Item key={item.id} id={`${item.id}`} style={{ padding: '10px', border: '1px solid rgb(18 16 16)', borderRadius: '5px' }}>
               <div style={{ textAlign: 'center' }}>
-                <Img src={item.url} alt={item.filename} width={200} height={200} style={{ objectFit: 'cover', borderRadius: '5px' }} />
+                <Img src={item.url} alt={item.filename} width={200} height={200} style={{ objectFit: 'cover', borderRadius: '5px' }} 
+                   onClick={() => handleImageClick(item.url)}
+                />
               </div>
               <div style={{ marginTop: '10px', textAlign: 'center' }}>
                 <h5>{item.filename}</h5>
@@ -128,9 +140,34 @@ const Component = observer((attr, item) => {
           )}
         </List>
       </InfiniteScroll>
+      <Modal
+        visible={visible}
+        onCancel={handleCancel}
+        footer={null} // 不显示底部操作按钮
+        width="80%"
+          bodyStyle={{ // 设置内容区域的样式
+    height: '80vh', // 设置内容区域高度为视口高度的80%
+    overflow: 'auto', // 如果内容超出，则显示滚动条
+    padding: '20px', // 根据需要调整内边距
+  }}
+        style={{ top: 30 }} // 模态框距离顶部的距离
+      >
+        {currentImage && (
+          <img
+            src={currentImage}
+            alt="Enlarged Image"
+      style={{
+        objectFit: 'contain', // 保持图片比例
+        margin: '0 auto', // 居中显示
+        display: 'block', // 移除图片的默认边框和间距
+        maxHeight: '80%', // 最大高度不超过模态框的80%
+        maxWidth: '100%', // 最大宽度不超过模态框的80%
+      }}
+          />
+        )}
+      </Modal>
+
     </div>
-
-
   );
 });
 
