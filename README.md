@@ -45,7 +45,7 @@ react-create-app、styled-components、React-Router、Mobx、Antd、MemFire
     const { error } = await supabase.auth.signOut()
     if (error) throw error
   }
-···
+```
 
 ### 图片上传
 ```
