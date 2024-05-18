@@ -20,7 +20,69 @@ react-create-app、styled-components、React-Router、Mobx、Antd、MemFire
 * 对象存储： 存储图片
 * 用户认证：用户注册、登陆、登出
 * API：提供API 供前端react调用
+
+  
 * 静态托管：托管此项目
+
+## 主要逻辑代码
+### 认证
+  ```
+    async register(email, password) {
+    let { user, error } = await supabase.auth.signUp({ email, password })
+    console.log(error)
+    if (error) throw error
+    console.log(user)
+    return user
+  },
+
+  async login(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data.user
+  },
+
+  async logout() {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+  }
+···
+
+### 图片上传
+```
+    let { data, error } = await supabase.storage.from('images').upload(filename, file, {upsert: true})
+    if (error) {
+        console.log(error)
+        throw error
+    }
+
+    const { data: {publicUrl} } = supabase.storage.from('images').getPublicUrl(filename)
+
+    const { data: exit, error:error0 } = await supabase
+      .from('images')
+      .select()
+      .eq('filename', filename)
+
+    if (exit.length !== 0) {
+        const { error: error1 } = await supabase
+          .from('images')
+          .update({'url': publicUrl})
+          .eq('filename', filename)
+        if (error1) throw error1
+    } else {
+        const { data: dbData, error: dbError } = await supabase.from('images').insert([
+          { filename, owner_id: user_id, url: publicUrl }
+        ])
+        if (dbError) throw dbError
+        return dbData
+    }
+
+    
+    const { data, error } = await supabase.from('images')
+      .select('id, filename, url, created_at')
+      .eq('owner_id', user_id)
+      .range(page * limit, (page + 1) * limit - 1)
+      .order('created_at', { ascending: false })
+```
 
 ## 部署
 ### BaaS准备
