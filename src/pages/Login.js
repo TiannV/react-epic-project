@@ -58,8 +58,8 @@ const Component = () => {
   }
 
   const validateUsername = (rule, value) => {
-    if(/\W/.test(value)) return Promise.reject('只能是字母、数字或下划线')       //\w是指出来字母、数字、下划线外的其他字符
-    if(value.length < 4 || value.length > 10) return Promise.reject('长度为4~10个字符')
+    if(! /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) return Promise.reject('邮箱格式不对')
+    if(value.length < 4 || value.length > 100) return Promise.reject('长度为4~100个字符')
     return Promise.resolve()
   }
 
@@ -74,7 +74,7 @@ const Component = () => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="用户名"
+          label="邮箱"
           name="username"
           rules={[
             {

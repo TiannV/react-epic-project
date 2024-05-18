@@ -24,7 +24,6 @@ const dotenvFiles = [
   NODE_ENV !== 'test' && `${paths.dotenv}.local`,
   paths.dotenv,
 ].filter(Boolean);
-
 // Load environment variables from .env* files. Suppress warnings using silent
 // if this file is missing. dotenv will never modify any environment variables
 // that have already been set.  Variable expansion is supported in .env files.
@@ -32,6 +31,7 @@ const dotenvFiles = [
 // https://github.com/motdotla/dotenv-expand
 dotenvFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {
+    console.log(dotenvFile)
     require('dotenv-expand')(
       require('dotenv').config({
         path: dotenvFile,
@@ -85,6 +85,13 @@ function getClientEnvironment(publicUrl) {
         WDS_SOCKET_HOST: process.env.WDS_SOCKET_HOST,
         WDS_SOCKET_PATH: process.env.WDS_SOCKET_PATH,
         WDS_SOCKET_PORT: process.env.WDS_SOCKET_PORT,
+        SUPABASE_URL: process.env.SUPABASE_URL,
+        SUPABASE_KEY: process.env.SUPABASE_KEY,
+        LINUXDO_CLIENT_ID: process.env.LINUXDO_CLIENT_ID,
+        LINUXDO_CLIENT_SECRET: process.env.LINUXDO_CLIENT_SECRET,
+        LINUXDO_USER_ENDPOINT: process.env.LINUXDO_USER_ENDPOINT,
+        LINUXDO_REDIRECT_URI: process.env.LINUXDO_REDIRECT_URI,
+        SALT: process.env.SALT,
       }
     );
   // Stringify all values so we can feed into webpack DefinePlugin

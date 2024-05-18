@@ -1,0 +1,46 @@
+.about-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  background-color: #000; /* 黑色背景 */
+  color: #fff; /* 白色字体 */
+}
+
+h1 {
+  text-align: center;
+  color: #fff; /* 白色字体 */
+}
+
+p {
+  line-height: 1.6;
+  color: #ddd; /* 浅灰色字体，确保对比度 */
+}
+
+.team-section {
+  margin-top: 40px;
+}
+
+.team-section h2 {
+  color: #fff; /* 白色字体 */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  color: #ddd; /* 浅灰色字体 */
+}
+
+a {
+  color: #1E90FF; /* 天蓝色字体 */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+

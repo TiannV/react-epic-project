@@ -1,10 +1,14 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import LogoURL from './flower.png'
 import {NavLink, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import {Button} from 'antd'
 import {useStores} from '../stores'
 import {observer} from 'mobx-react'
+import {supabase} from '../models'
+const axios = require('axios');
+const crypto = require('crypto');
+const qs = require('qs')
 
 const Header = styled.header`
   background-color: #02101f;
@@ -43,6 +47,24 @@ const StyledButton = styled(Button)`
 `
 
 const Component = observer(() => {
+    const [session, setSession] = useState(null)
+
+    useEffect(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        console.log(session)
+        setSession(session)
+      })
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session)
+      })
+
+      return () => subscription.unsubscribe()
+    }, [])
+
+
   const {UserStore, AuthStore} = useStores()
   const history = useHistory()
 
@@ -60,19 +82,21 @@ const Component = observer(() => {
     history.push('/register')
   }
 
+
   return (
     <Header>
       <Logo src={LogoURL}/>
       <nav>
         <StyledLink to='/' activeClassName='active' exact>首页</StyledLink>
-        <StyledLink to='/history' activeClassName='active'>上传历史</StyledLink>
-        <StyledALink target="_blank" href='https://github.com/Paulahu' activeClassName='active'>Github</StyledALink>
-        <StyledALink target="_blank" href='https://juejin.im/user/5e609571f265da57337d0ebe/posts' activeClassName='active'>Blog</StyledALink>
+        <StyledLink to='/history' activeClassName='active'>图床</StyledLink>
+        <StyledALink target="_blank" href='https://github.com/TiannV/react-epic-project.git' activeClassName='active'>Github</StyledALink>
+        <StyledALink target="_blank" href='https://cloud.memfiredb.com/auth/login?from=1HdvKv' activeClassName='active'>BaaS</StyledALink>
+        <StyledLink to='/about' activeClassName='active'>关于</StyledLink>
       </nav>
       <Login>
         {
-          UserStore.currentUser ? <>
-            {UserStore.currentUser.attributes.username} <StyledButton type="primary"
+          session ? <>
+              {session.user.email} <StyledButton type="primary"
                                                                       onClick={handleLogout}>注销</StyledButton>
           </> : <>
             <StyledButton type="primary" onClick={handleLogin}>登录</StyledButton>

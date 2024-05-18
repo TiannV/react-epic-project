@@ -4,6 +4,7 @@ import {observer} from 'mobx-react'
 import {Upload, Table, Input, Form, Button} from 'antd'
 import {InboxOutlined} from '@ant-design/icons'
 import {message, Spin} from 'antd'
+import {supabase} from '../models'
 import styled from 'styled-components'
 import './Uploader.css'
 import copy from 'copy-to-clipboard'
@@ -34,6 +35,23 @@ const Wrapper = styled.div`
 `
 
 const Component = observer(() => {
+    const [session, setSession] = useState(null)
+
+    useEffect(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        console.log(session)
+        setSession(session)
+      })
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session)
+      })
+
+      return () => subscription.unsubscribe()
+    }, [])
+
     const {ImageStore, UserStore} = useStores()
 
     const props = {
@@ -41,18 +59,18 @@ const Component = observer(() => {
       beforeUpload: file => {
         ImageStore.setFile(file)
         ImageStore.setFilename(file.name)
-        if (UserStore.currentUser === null) {
-          message.warning('请先登录再上传文件!')
-          return false
-        }
 
         window.file = file
         if (!/(svg$)|(png$)|(jpg$)|(gif$)|(jpeg$)/ig.test(file.type)) {
           message.error('只能上传.png/.jpg/.svg/.gif/.jpeg格式的图片')
           return false
         }
-        if (file.size > 1024 * 1024) {
-          message.error('只能上传大小在1M以内的图片')
+        if (!session && file.size > 1024 * 1024) {
+          message.error('游客只能上传大小在1M以内的图片')
+          return false
+        }
+        if (session && file.size > 5 * 1024 * 1024) {
+          message.error('登录用户只能上传大小在5M以内的图片')
           return false
         }
 
@@ -259,7 +277,7 @@ const Component = observer(() => {
               </p>
               <p className="ant-upload-text">点击或拖拽上传图片</p>
               <p className="ant-upload-hint">
-                仅支持.png/.jpg/.svg/.gif/.jpeg格式的图片，图片最大1M
+                游客图床共享，登录用户图床隔离，图片最大1M(登录用户最大5M)
               </p>
             </Dragger>
           </Spin>

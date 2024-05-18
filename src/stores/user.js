@@ -3,10 +3,11 @@ import {Auth} from '../models'
 
 class UserStore {
   //状态
-  @observable currentUser = null
+  @observable currentUser = Auth.getCurrentUser()
 
-  @action pullUser() {
-    this.currentUser = Auth.getCurrentUser()
+  @action pullUser(user) {
+    console.log(user)
+    this.currentUser = user
   }
 
   @action resetUser() {

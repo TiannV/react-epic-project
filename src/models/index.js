@@ -1,88 +1,114 @@
-import AV, {Query, User} from 'leancloud-storage'
-
-AV.init({
-  appId: 'mKBoPo3JbzfS3F25F87Qi78q-gzGzoHsz',
-  appKey: 'tik25FdYrwTKjktccMJlShuT',
-  serverURL: 'https://mkbopo3j.lc-cn-n1-shared.com'
-})
+import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 const Auth = {
-  register(username, password) {
-    let user = new User()
-    user.setUsername(username)
-    user.setPassword(password)
-    return new Promise((resolve, reject) => {
-      user.signUp().then(loginedUser => {
-        resolve(loginedUser)
-      }, error => {
-        reject(error)
-      })
-    })
+  async register(email, password) {
+    let { user, error } = await supabase.auth.signUp({ email, password })
+    console.log(error)
+    if (error) throw error
+    console.log(user)
+    return user
   },
 
-  login(username, password) {
-    return new Promise((resolve, reject) => {
-      User.logIn(username, password).then(loginedUser => {
-          resolve(loginedUser)
-        }, error => {
-          reject(error)
-        }
-      )
-    })
+  async login(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data.user
   },
 
-  logout() {
-    User.logOut()
+  async logout() {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
   },
 
-  getCurrentUser() {
-    return User.current()
+  async getCurrentUser() {
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log(user)
+    return user
   }
 }
 
 const Uploader = {
-  add(file, filename) {
-    const item = new AV.Object('Image')
-    const avFile = new AV.File(filename,file)
-    item.set('filename',filename)
-    item.set('owner',AV.User.current())
-    item.set('url',avFile)
-    return new Promise((resolve, reject) => {
-      item.save().then((serverFile) => {
-        resolve(serverFile)
-      }, error => {
-        reject(error)
-      })
-    })
+  async add(file, filename) {
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log(user)
+    let user_id = ''
+    let f = ''
+    if (user) {
+        user_id = user.id
+        f = user.id + '/'
+    } else {
+        user_id = 'anon'
+        f = 'public/'
+    }
+
+    filename = f+filename
+    let { data, error } = await supabase.storage.from('images').upload(filename, file, {upsert: true})
+    if (error) {
+        console.log(error)
+        throw error
+    }
+
+    const { data: {publicUrl} } = supabase.storage.from('images').getPublicUrl(filename)
+
+    const { data: exit, error:error0 } = await supabase
+      .from('images')
+      .select()
+      .eq('filename', filename)
+   
+    console.log(exit) 
+    if (exit.length !== 0) {
+	const { error: error1 } = await supabase
+	  .from('images')
+	  .update({'url': publicUrl})
+	  .eq('filename', filename)
+        if (error1) throw error1
+    } else {	    
+        const { data: dbData, error: dbError } = await supabase.from('images').insert([
+          { filename, owner_id: user_id, url: publicUrl }
+        ])
+        if (dbError) throw dbError
+        return dbData
+    }
   },
-  find({page=0, limit=10}) {
-    const query = new AV.Query('Image')
-    query.include('owner')
-    query.limit(limit)
-    query.skip(page*limit)
-    query.equalTo('owner', AV.User.current())
-    query.descending('createdAt')
-    return new Promise((resolve, reject) => {
-      query.find()
-        .then(results => resolve(results))
-        .catch(error => reject(error))
-    })
+
+  async find({ page = 0, limit = 10 }) {
+    const { data: { user } } = await supabase.auth.getUser()
+    let user_id = ''
+    if (user) {
+        user_id = user.id
+    } else {
+        user_id = 'anon'
+    }
+
+    const { data, error } = await supabase.from('images')
+      .select('id, filename, url, created_at')
+      .eq('owner_id', user_id)
+      .range(page * limit, (page + 1) * limit - 1)
+      .order('created_at', { ascending: false })
+    if (error) throw error
+    return data
   },
-  deleteItem(id) {
-    const todo = AV.Object.createWithoutData('Image', id)
-    todo.destroy()
-    return new Promise((resolve, reject) => {
-      todo.destroy()
-        .then(results=> resolve(results,console.log('删除对象')))
-        .catch( error => reject(error))
-    })
+
+  async deleteItem(id) {
+    const { data: imageData, error: imageError } = await supabase.from('images').select('filename').eq('id', id).single()
+    if (imageError) throw imageError
+
+    const { error: storageError } = await supabase.storage.from('images').remove([imageData.filename])
+    if (storageError) throw storageError
+
+    const { data, error } = await supabase.from('images').delete().eq('id', id)
+    if (error) throw error
+    return data
   }
 }
 
 window.Uploader = Uploader
 
-
 export {
   Auth,
+  supabase,
   Uploader
 }

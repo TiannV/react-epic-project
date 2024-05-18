@@ -16,8 +16,7 @@ const Home = observer(
     const {UserStore} = useStores()
     return (
       <>
-        <Tips>请先登录再上传文件!</Tips>
-        <Title src={titleUrl} />
+        <Title  />
         <Uploader />
       </>
     )

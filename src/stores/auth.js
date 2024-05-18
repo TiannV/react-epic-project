@@ -32,7 +32,8 @@ class AuthStore {
     return new Promise((resolve, reject) => {
       Auth.login(this.values.username, this.values.password)
         .then(user => {
-          UserStore.pullUser()
+          console.log(user)
+          UserStore.pullUser(user)
           resolve(user)
         })
         .catch(error => {
@@ -47,12 +48,29 @@ class AuthStore {
     return new Promise((resolve, reject) => {
       Auth.register(this.values.username, this.values.password)
         .then(user => {
-          UserStore.pullUser()
+          UserStore.pullUser(user)
           resolve(user)
         })
         .catch(error => {
+          console.log(error)
           UserStore.resetUser()
           message.error('注册失败')
+          reject(error)
+        })
+    })
+  }
+
+  @action getCurrentUser() {
+    return new Promise((resolve, reject) => {
+      Auth.getCurrentUser()
+        .then(user => {
+          UserStore.pullUser(user)
+          resolve(user)
+        })
+        .catch(error => {
+          console.log(error)
+          UserStore.resetUser()
+          message.error('获取用户失败')
           reject(error)
         })
     })

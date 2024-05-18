@@ -14,7 +14,7 @@ const Title = styled.div`
 function Component() {
   return (
     <Footer>
-      <Title>MIT Licensed | Copyright © 2020 Paula Hu</Title>
+      <Title>MIT Licensed | Copyright © 2024 tw</Title>
     </Footer>
   )
 }
