@@ -25,7 +25,7 @@ react-create-app、styled-components、React-Router、Mobx、Antd、MemFire
 ## 部署
 ### BaaS准备
 1. 登录[MemFire](https://cloud.memfiredb.com/auth/login?from=1HdvKv)创建应用
-   ![创建应用](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8.png}
+   ![创建应用](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8.png)
 
 2. 创建数据库表 images
    ![创建数据库表](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%93%E8%A1%A8.png)
