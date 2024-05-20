@@ -87,16 +87,16 @@ react-create-app、styled-components、React-Router、Mobx、Antd、MemFire
 ## 部署
 ### BaaS准备
 1. 登录[MemFire](https://cloud.memfiredb.com/auth/login?from=1HdvKv)创建应用
-   ![创建应用](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8.png)
+   ![创建应用](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8.png)
 
 2. 创建数据库表 images
-   ![创建数据库表](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%93%E8%A1%A8.png)
+   ![创建数据库表](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/%E5%88%9B%E5%BB%BA%E5%BA%93%E8%A1%A8.png)
 
 3. 创建bucket images
-   ![bukect](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/bucket.png)
+   ![bukect](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/bucket.png)
 
 4. 配置bucket 访问策略，图简单可以直接设置允许所有用户可访问
-   ![policy](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/policy.png)
+   ![policy](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/policy.png)
 
 ### 开发
 1. 配置环境 `vim .env` 
@@ -105,7 +105,7 @@ SUPABASE_URL="https://cokr4***********baseapi.memfiredb.com"
 SUPABASE_KEY="eyJhbGciOiJIUz***************************************************************************c"
 ```
 
-![key](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/key.png)
+![key](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/key.png)
 
 2. 安装依赖
    `yarn install`
@@ -120,10 +120,10 @@ SUPABASE_KEY="eyJhbGciOiJIUz****************************************************
    zip -rq -y index.zip ./ 
    ```
 2. 将包上传至静态托管
-![deploy](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/deploy.png)
+![deploy](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/deploy.png)
 
 3. 自定义域名
-![domain](https://cokr41i5g6hc2l9v8i60.baseapi.memfiredb.com/storage/v1/object/public/images/public/domain.png)
+![domain](https://cnnbrba5g6haaugeu530.baseapi.memfiredb.com/storage/v1/object/public/images/public/domain.png)
 
 
 
